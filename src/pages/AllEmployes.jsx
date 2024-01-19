@@ -1,78 +1,23 @@
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import { getEmployes } from '../../services/employes';
-import { formatDate } from '../../services/formatDate';
-import { useEffect, useState } from 'react';
+import { getAllEmployes } from '../../services/employes';
 
-export default function AllEmployes() {
-  const employesQuery = useQuery({
-    queryFn: getEmployes,
-    onSuccess: (data) => {
-      transformAndSort(data);
-    },
-  });
+const AllEmployes = () => {
+  const AllEmployes = getAllEmployes();
 
-  const [formatedData, setFormatedData] = useState([]);
-
-  function transformAndSort(inputJson) {
-    inputJson.sort((a, b) => {
-      if (a.name !== b.name) {
-        return a.name.localeCompare(b.name);
-      } else if (a.surname !== b.surname) {
-        return a.surname.localeCompare(b.surname);
-      } else {
-        return new Date(a.created_at) - new Date(b.created_at);
-      }
-    });
-
-    const result = {};
-
-    inputJson.forEach((entry) => {
-      const key = `${entry.name}_${entry.surname}`;
-
-      if (!result[key]) {
-        result[key] = {
-          name: entry.name,
-          surname: entry.surname,
-        };
-      }
-
-      for (let i = 1; i <= 22; i++) {
-        const questionKey = `question${i}`;
-        const response = entry[questionKey];
-
-        if (response !== null && response !== undefined) {
-          if (!result[key][questionKey]) {
-            result[key][questionKey] = [];
-          }
-
-          result[key][questionKey].push({
-            created_date: entry.created_at,
-            response: response.toString(),
-          });
-        }
-      }
-    });
-
-    setFormatedData(Object.values(result));
-  }
-
-  useEffect(() => {
-    console.log(formatedData);
-  }, [formatedData]);
   return (
     <div>
-      {employesQuery.isFetched &&
-        formatedData.map((employe, index) => (
-          <Link
-            className='flex justify-between w-full border-b py-2'
-            to={'/employes/' + employe.name}
-            key={employe.name + index}
-          >
-            <p>{employe.name}</p>
-            <p>{formatDate(employe.created_at)}</p>
-          </Link>
-        ))}
+      <h1 className='capitalize font-bold pb-4 text-3xl'>Liste des agents</h1>
+      {AllEmployes.map((employe, index) => (
+        <Link
+          className='flex justify-between w-full py-2 bg-gray-50 rounded-lg mb-1 px-3 hover:bg-gray-100'
+          to={`/${employe.id}`}
+          key={employe.id + index}
+        >
+          <p>{employe.name}</p>
+        </Link>
+      ))}
     </div>
   );
-}
+};
+
+export default AllEmployes;

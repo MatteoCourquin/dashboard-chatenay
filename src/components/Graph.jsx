@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
-  Tooltip,
   YAxis,
 } from 'recharts';
 
@@ -24,10 +22,8 @@ const Graph = ({ data }) => {
           }}
         >
           <CartesianGrid />
-          <YAxis interval={1} minTickGap={0} domain={[0, 5]} />
-          <Tooltip />
-          <Legend />
-          <Line type='monotone' dataKey='response' stroke='#8884d8' />
+          <YAxis interval={1} minTickGap={0} />
+          <Line type='monotone' dataKey='score' stroke='#8884d8' />
         </LineChart>
       </ResponsiveContainer>
     </div>
